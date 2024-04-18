@@ -1,5 +1,7 @@
 ## TIC TAC TOE
 
+v = 0.01
+
 import os
 from random import randrange
 import time
