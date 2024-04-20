@@ -1,4 +1,4 @@
-v = 0.18
+v = 0.20
 
 import os
 from random import randrange
@@ -11,6 +11,7 @@ randome = randrange(100)
 status = None
 
 def greating():
+    os.system('color a')
     os.system('cls')
     print("\n\n\n"
           "            #########################\n"
@@ -37,9 +38,9 @@ def update_cell_value():
     global who_next2
     draw_field()
     if who_next2 == 'x':
-        print("Ход Игрок_1 - X")
+        print("Ход Игрока_1 - X")
     elif who_next2 == 'o':
-        print("Ход Игрок_2 - O")
+        print("Ход Игрока_2 - O")
     try:
         position = int(input("Введите номер ячейки для изменения (1-9): "))
     except ValueError:
@@ -115,26 +116,23 @@ def first_step():
     global randome
     global who_next2
     status = 'game'
-    print("Игрок1 ходит ноликами - X\n"
-          "Игрок2 ходит крестиками - O \n\n")
+    print("Игрок_1 ходит крестиками - X\n"
+          "Игрок_2 ходит ноликами - O \n\n")
     input("\n\nНажмите любую клавишу для продолжения...")
     if randome % 2 == 0:
         who_next2 = 'o'
-        print(randrange(100), "Первый ход за Игроком2\n")
-        draw_field()
+        print( "Первый ход за Игроком_2\n")
         input("\n\nНажмите любую клавишу для продолжения...")
     elif randome % 2 != 0:
         who_next2 = 'x'
-        print(randrange(100), "Первый ход за Игроком1\n")
-        draw_field()
+        print( "Первый ход за Игроком_1\n")
         input("\n\nНажмите любую клавишу для продолжения...")
+
 
 greating()
 first_step()
 
 while status != 'stop':
-    os.system('cls')
-    draw_field()
     update_cell_value()
     check_for_win(cell)
     check_for_stop()
