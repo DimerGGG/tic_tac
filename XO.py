@@ -1,39 +1,85 @@
-## TIC TAC TOE
-
-v = 0.01
+v = 0.18
 
 import os
 from random import randrange
-import time
 
-cell = {1: '1', 2: '2', 3: '3', 4: '4', 5: '5',
-        6: '6', 7: '7',  8: '8', 9: '9'}
+cell = {i: str(i) for i in range(1, 10)}
 
-who_next = None
+who_next2 = None
 winner = None
-first_step = None
-step = None
-randome = None
+randome = randrange(100)
+status = None
 
-def draw_field(cell):
-    field = (f"|{cell[1]}|{cell[2]}|{cell[3]}|\n"
-             f"|{cell[4]}|{cell[5]}|{cell[6]}|\n"
-             f"|{cell[7]}|{cell[8]}|{cell[9]}|")
+def greating():
+    os.system('cls')
+    print("\n\n\n"
+          "            #########################\n"
+          "            ##                     ##\n"
+          "            ##   КРЕСТИКИ НОЛИКИ   ##\n"
+          "            ##                     ##\n"
+          "            ##       |x|o|x|       ##\n"
+          "            ##       | |x|o|       ##\n"
+          "            ##       |o| |x|       ##\n"
+          "            ##                     ##\n"
+          "            #########################\n"
+          "\n"
+          "\n"
+          "Version", v)
+    input("\n\nНажмите любую клавишу для продолжения...")
+    os.system('cls')
+
+def draw_field():
+    os.system('cls')
+    field = "\n".join([f"            | {cell[i]} | {cell[i+1]} | {cell[i+2]} |\n            ------------- " for i in range(1, 10, 3)])
     print(field)
 
 def update_cell_value():
-    os.system('cls')
-    draw_field(cell)
-    position = int(input("Введите номер ячейки для изменения (1-9): "))
+    global who_next2
+    draw_field()
+    if who_next2 == 'x':
+        print("Ход Игрок_1 - X")
+    elif who_next2 == 'o':
+        print("Ход Игрок_2 - O")
+    try:
+        position = int(input("Введите номер ячейки для изменения (1-9): "))
+    except ValueError:
+        print("Пожалуйста, введите число от 1 до 9.")
+        update_cell_value()
+        return
     if position in cell:
         if cell[position] == 'x' or cell[position] == 'o':
             print("Эта ячейка уже занята. Выберите другую ячейку.")
             update_cell_value()
         else:
-            cell[position] = 'x'
+            cell[position] = who_next2 or 'x'
+            if who_next2 == 'x':
+                who_next2 = 'o'
+            elif who_next2 == 'o':
+                who_next2 = 'x'
+            return
     else:
         print("Неверный номер ячейки. Пожалуйста, введите число от 1 до 9.")
         update_cell_value()
+
+def check_for_stop():
+    global status
+    if winner == "x":
+        print("\nПобедил Игрок_1!\n")
+        status = 'stop'
+    elif winner == "o":
+        print("\nПобедил Игрок_2!\n")
+        status = 'stop'
+    elif (cell[1] != '1' and
+          cell[2] != '2' and
+          cell[3] != '3' and
+          cell[4] != '4' and
+          cell[5] != '5' and
+          cell[6] != '6' and
+          cell[7] != '7' and
+          cell[8] != '8' and
+          cell[9] != '9'):
+        status = 'stop'
+        print("\nПобедила дружба")
 
 def check_for_win(cell):
     global winner
@@ -41,10 +87,10 @@ def check_for_win(cell):
         winner = cell[1]
         return True
     elif (cell[4] == cell[5] == cell[6]):
-        winner = cell[2]
+        winner = cell[4]
         return True
     elif (cell[7] == cell[8] == cell[9]):
-        winner = cell[2]
+        winner = cell[7]
         return True
     elif (cell[1] == cell[4] == cell[7]):
         winner = cell[1]
@@ -53,7 +99,7 @@ def check_for_win(cell):
         winner = cell[2]
         return True
     elif (cell[3] == cell[6] == cell[9]):
-        winner = cell[2]
+        winner = cell[3]
         return True
     elif (cell[1] == cell[5] == cell[9]):
         winner = cell[1]
@@ -61,58 +107,34 @@ def check_for_win(cell):
     elif (cell[3] == cell[5] == cell[7]):
         winner = cell[3]
         return True
-    else: return False
+    else:
+        return False
 
-os.system('cls')
+def first_step():
+    global status
+    global randome
+    global who_next2
+    status = 'game'
+    print("Игрок1 ходит ноликами - X\n"
+          "Игрок2 ходит крестиками - O \n\n")
+    input("\n\nНажмите любую клавишу для продолжения...")
+    if randome % 2 == 0:
+        who_next2 = 'o'
+        print(randrange(100), "Первый ход за Игроком2\n")
+        draw_field()
+        input("\n\nНажмите любую клавишу для продолжения...")
+    elif randome % 2 != 0:
+        who_next2 = 'x'
+        print(randrange(100), "Первый ход за Игроком1\n")
+        draw_field()
+        input("\n\nНажмите любую клавишу для продолжения...")
 
-print("\n\n\n"
-      "            #########################\n"
-      "            ##                     ##\n"
-      "            ##   КРЕСТИКИ НОЛИКИ   ##\n"
-      "            ##                     ##\n"
-      "            ##       |x|o|x|       ##\n"
-      "            ##       | |x|o|       ##\n"
-      "            ##       |o| |x|       ##\n"
-      "            ##                     ##\n"
-      "            #########################\n")
+greating()
+first_step()
 
-input("\n\nНажмите любую клавишу для продолжения...")
-os.system('cls')
-type_game = input("Какой тип игры?\n"
-                  "1 - игра с компьютером\n"
-                  "2 - игра с человеком\n")
-
-if type_game == "1":
+while status != 'stop':
     os.system('cls')
-    print("Выбран режим игры с компьютером\n")
-    print("компьютер ходит ноликами - o\n"
-    "игрок ходит крестиками - x \n"
-    "\n")
-    if randrange(100) % 2 == 0:
-        first_step = "o"
-        who_next = 1
-        print(randrange(100), "Первый ход за компьютером\n")
-        draw_field(cell)
-        input("\n\nНажмите любую клавишу для продолжения...")
-
-        randome = randrange(4)
-        if randome == 1:
-            cell[1] = 'o'
-
-        elif randome == 2:
-            cell[3] = 'o'
-        elif randome == 3:
-            cell[7] = 'o'
-        else:
-            cell[9] = 'o'
-
-
-
-    elif randrange(100) % 2 != 0:
-        first_step = "x"
-        who_next = 0
-        print(randrange(100), "Первый ход за игроком\n")
-        draw_field(cell)
-        input("\n\nНажмите любую клавишу для продолжения...")
-
-    else: os.system('cls')
+    draw_field()
+    update_cell_value()
+    check_for_win(cell)
+    check_for_stop()
